@@ -1,19 +1,19 @@
-export interface FormItem {
+export interface FormItemType {
   label: string
   description: string | null
   type: string
   id: string
   required: boolean
-  options?: Option[]
-  legend?: Legend
+  options?: OptionType[]
+  legend?: LegendType
 }
 
-export interface Option {
+export interface OptionType {
   label: string
   custom?: boolean
 }
 
-export interface Legend {
+export interface LegendType {
   labelFirst: string
   labelLast: string
 }
