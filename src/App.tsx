@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
 import Form from './components/Form';
 import { FormItemType } from './types/FormTypes';
+const middlewareUrl = import.meta.env.MODE == 'development'
+  ? 'http://localhost:3000/'
+  : 'https://shopify-google-form-497c790c9a12.herokuapp.com/';
 
 type Props = {
   formId: string,
@@ -13,7 +16,7 @@ function App({ formId, successMessage }: Props) {
 
   useEffect(() => {
     const fetchFormData = async () => {
-      await fetch(`http://localhost:3000/get-form/${formId}`)
+      await fetch(`${middlewareUrl}get-form/${formId}`)
         .then(res => res.json())
         .then(res => {
           console.log(res);

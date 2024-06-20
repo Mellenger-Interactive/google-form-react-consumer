@@ -17,7 +17,7 @@ class GoogleFormEmbed extends HTMLElement {
     // Always call super first in constructor
     super();
     this.formId = this.dataset.id || '';
-    this.successMessage = this.dataset.successMessage || '';
+    this.successMessage = this.dataset.successMessage || 'Thank you for your submission. We will get back to you soon.';
     this.renderElement();
   }
 
