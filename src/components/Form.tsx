@@ -82,6 +82,7 @@ function Form({ formId, formData, successMessage }: Props) {
                   <input
                     id={formItem.id}
                     className={`${el}__input`}
+                    type={'text'}
                     {...register(formItem.id, { required: formItem.required })}
                   />
                 )}
@@ -141,7 +142,9 @@ function Form({ formId, formData, successMessage }: Props) {
           <button
             type="submit"
             className={`${el}__button button`}
-            disabled={isSubmitting}>Submit</button>
+            disabled={isSubmitting}>
+              <span>Submit</span>
+          </button>
         </form>
       </SlideDown>
       <SlideDown
