@@ -21,37 +21,44 @@ function Form({ formId, formData }: Props) {
             {formItem.required && '*'}
           </label>
 
-          {
-            {
-              'LONG_ANSWER':
-                <textarea
-                  id={formItem.id}
-                  {...register(formItem.id, { required: formItem.required })}
-                ></textarea>,
-              'SHORT_ANSWER':
-                <input
-                  id={formItem.id}
-                  {...register(formItem.id, { required: formItem.required })}
-                />,
-              'DROPDOWN':
-                <select
-                  id={formItem.id}
-                  {...register(formItem.id, { required: formItem.required })}
+          {formItem.type == 'LONG_ANSWER' && (
+            <textarea
+              id={formItem.id}
+              {...register(formItem.id, { required: formItem.required })}
+            ></textarea>
+          )}
+
+          {formItem.type == 'SHORT_ANSWER' && (
+            <input
+              id={formItem.id}
+              {...register(formItem.id, { required: formItem.required })}
+            />
+          )}
+
+          {formItem.type == 'DROPDOWN' && (
+            <select
+              id={formItem.id}
+              {...register(formItem.id, { required: formItem.required })}
+            >
+              {!formItem.required && <option value="">- Choose an option -</option>}
+              {formItem.options?.map((option, optionIndex) => (
+                <option
+                  key={optionIndex}
+                  value={option.label}
                 >
-                  {!formItem.required && <option value="">- Choose an option -</option>}
-                  {formItem.options?.map((option, optionIndex) => (
-                    <option
-                      key={optionIndex}
-                      value={option.label}
-                    >
-                      {option.label}
-                    </option>
-                  ))}
-                </select>,
-              'RADIO':
-                <>
-                  {formItem.options?.map((option, optionIndex) => (
-                    <label htmlFor={`${formItem.id}[${option.label}]`} key={optionIndex}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          )}
+
+          {(formItem.type == 'RADIO' || formItem.type == 'LINEAR') && (
+            <>
+              {formItem.options?.map((option, optionIndex) => {
+
+                return(
+                  <Fragment key={optionIndex}>
+                    {option.label != '' && <label htmlFor={`${formItem.id}[${option.label}]`}>
                       <input
                           {...(optionIndex == 0 && formItem.required ? { defaultChecked: 'checked' } : {})}
                           id={`${formItem.id}[${option.label}]`}
@@ -60,26 +67,12 @@ function Form({ formId, formData }: Props) {
                           value={option.label}
                       />
                       {option.label}
-                    </label>
-                  ))}
-                </>,
-              'LINEAR': //TODO: Make range slider?
-                <>
-                  {formItem.options?.map((option, optionIndex) => (
-                    <label htmlFor={`${formItem.id}[${option.label}]`} key={optionIndex}>
-                      <input
-                          {...(optionIndex == 0 && formItem.required ? { defaultChecked: 'checked' } : {})}
-                          id={`${formItem.id}[${option.label}]`}
-                          type="radio"
-                          name={formItem.id}
-                          value={option.label}
-                      />
-                      {option.label}
-                    </label>
-                  ))}
-                </>,
-            }[formItem.type]
-          }
+                    </label>}
+                  </Fragment>
+                )
+              })}
+            </>
+          )}
         </p>
       ))}
     {/* {errors.email && <span>{errors.email.message}</span>} */}
