@@ -22,44 +22,74 @@ const getFormElementType = (initialType:string) => {
   }
 }
 
+const getFormElementName = (id:string) => id; //`entry.${id}`;
+
 function Form({ formId, formData }: Props) {
   const el = 'form-item';
   const { register, handleSubmit, errors } = useForm();
-  const onSubmit = (data) => console.log(data);
+
+  const onSubmit = (data) => {
+    console.log(data);
+
+    const submitToGoogleForm = async (parsedData) => {
+      // const mappedData = parsedData.map(([key, value]) => {
+      //   return `entry.${key}=${value}`;
+      // }).join('&');
+      fetch(`https://docs.google.com/forms/d/e/${formId}/formResponse`, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          ...parsedData,
+          submit: "Submit",
+        })
+      }).then(res => console.log(res.json()));
+    };
+
+
+    const parsedData = {};
+    Object.keys(data).forEach((key:string) => {
+      parsedData[`entry.${key}`] = data[key];
+    });
+    submitToGoogleForm(parsedData);
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       {formData.map((formItem, formItemIndex) => {
         const formItemType = getFormElementType(formItem.type);
+        const formItemName = getFormElementName(formItem.id);
 
         return (
-          <p className={`${el} ${el}--type-${formItemType}`} key={formItemIndex}>
-            <label htmlFor={formItem.id} className={`${el}__label`}>
+          <div className={`${el} ${el}--type-${formItemType}`} key={formItemIndex}>
+            <label htmlFor={formItemName} className={`${el}__label`}>
               {formItem.label}
               {formItem.required && '*'}
             </label>
 
             {formItemType == 'textarea' && (
               <textarea
-                id={formItem.id}
+                id={formItemName}
                 className={`${el}__input`}
-                {...register(formItem.id, { required: formItem.required })}
+                {...register(formItemName, { required: formItem.required })}
               ></textarea>
             )}
 
             {formItemType == 'text' && (
               <input
-                id={formItem.id}
+                id={formItemName}
                 className={`${el}__input`}
-                {...register(formItem.id, { required: formItem.required })}
+                {...register(formItemName, { required: formItem.required })}
               />
             )}
 
             {formItemType == 'select' && (
               <select
-                id={formItem.id}
+                id={formItemName}
                 className={`${el}__input`}
-                {...register(formItem.id, { required: formItem.required })}
+                {...register(formItemName, { required: formItem.required })}
               >
                 {!formItem.required && <option value="">- Choose an option -</option>}
                 {formItem.options?.map((option, optionIndex) => (
@@ -80,13 +110,13 @@ function Form({ formId, formData }: Props) {
 
                   return(
                     <div key={optionIndex} className={`${el}__option`}>
-                      {option.label != '' && <label htmlFor={`${formItem.id}[${option.label}]`}>
+                      {option.label != '' && <label htmlFor={`${formItemName}[${option.label}]`}>
                         <input
-                          {...(optionIndex == 0 && formItem.required ? { defaultChecked: 'checked' } : {})}
-                          id={`${formItem.id}[${option.label}]`}
+                          id={`${formItemName}[${option.label}]`}
                           type="radio"
                           name={formItem.id}
                           value={option.label}
+                          defaultChecked={optionIndex == 0 && formItem.required}
                         />
                         <span className={`${el}__option-label`}>
                           {option.label}
@@ -97,7 +127,7 @@ function Form({ formId, formData }: Props) {
                 })}
               </>
             )}
-          </p>
+          </div>
         )
       })}
       {/* {errors.email && <span>{errors.email.message}</span>} */}
