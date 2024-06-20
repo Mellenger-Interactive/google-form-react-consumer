@@ -22,8 +22,6 @@ const getFormElementType = (initialType:string) => {
   }
 }
 
-const getFormElementName = (id:string) => id; //`entry.${id}`;
-
 function Form({ formId, formData }: Props) {
   const el = 'form-item';
   const { register, handleSubmit, errors } = useForm();
@@ -32,27 +30,16 @@ function Form({ formId, formData }: Props) {
     console.log(data);
 
     const submitToGoogleForm = async (parsedData) => {
-      // const mappedData = parsedData.map(([key, value]) => {
-      //   return `entry.${key}=${value}`;
-      // }).join('&');
-      fetch(`https://docs.google.com/forms/d/e/${formId}/formResponse`, {
+      const mappedData = parsedData.map(([key, value]) => {
+        return `entry.${key}=${value}`;
+      }).join('&');
+      fetch(`https://docs.google.com/forms/d/e/${formId}/formResponse?${mappedData}&submit=Submit`, {
         method: "POST",
         mode: "no-cors",
-        headers: {
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          ...parsedData,
-          submit: "Submit",
-        })
-      }).then(res => console.log(res.json()));
+      }).then(res => console.log(res));
     };
 
-
-    const parsedData = {};
-    Object.keys(data).forEach((key:string) => {
-      parsedData[`entry.${key}`] = data[key];
-    });
+    const parsedData = Object.entries(data);
     submitToGoogleForm(parsedData);
   }
 
@@ -60,36 +47,35 @@ function Form({ formId, formData }: Props) {
     <form onSubmit={handleSubmit(onSubmit)}>
       {formData.map((formItem, formItemIndex) => {
         const formItemType = getFormElementType(formItem.type);
-        const formItemName = getFormElementName(formItem.id);
 
         return (
           <div className={`${el} ${el}--type-${formItemType}`} key={formItemIndex}>
-            <label htmlFor={formItemName} className={`${el}__label`}>
+            <label htmlFor={formItem.id} className={`${el}__label`}>
               {formItem.label}
               {formItem.required && '*'}
             </label>
 
             {formItemType == 'textarea' && (
               <textarea
-                id={formItemName}
+                id={formItem.id}
                 className={`${el}__input`}
-                {...register(formItemName, { required: formItem.required })}
+                {...register(formItem.id, { required: formItem.required })}
               ></textarea>
             )}
 
             {formItemType == 'text' && (
               <input
-                id={formItemName}
+                id={formItem.id}
                 className={`${el}__input`}
-                {...register(formItemName, { required: formItem.required })}
+                {...register(formItem.id, { required: formItem.required })}
               />
             )}
 
             {formItemType == 'select' && (
               <select
-                id={formItemName}
+                id={formItem.id}
                 className={`${el}__input`}
-                {...register(formItemName, { required: formItem.required })}
+                {...register(formItem.id, { required: formItem.required })}
               >
                 {!formItem.required && <option value="">- Choose an option -</option>}
                 {formItem.options?.map((option, optionIndex) => (
@@ -110,13 +96,13 @@ function Form({ formId, formData }: Props) {
 
                   return(
                     <div key={optionIndex} className={`${el}__option`}>
-                      {option.label != '' && <label htmlFor={`${formItemName}[${option.label}]`}>
+                      {option.label != '' && <label htmlFor={`${formItem.id}[${option.label}]`}>
                         <input
-                          id={`${formItemName}[${option.label}]`}
+                          defaultChecked={optionIndex == 0 && formItem.required}
+                          id={`${formItem.id}[${option.label}]`}
                           type="radio"
                           name={formItem.id}
                           value={option.label}
-                          defaultChecked={optionIndex == 0 && formItem.required}
                         />
                         <span className={`${el}__option-label`}>
                           {option.label}
