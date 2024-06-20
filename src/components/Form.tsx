@@ -150,7 +150,7 @@ function Form({ formId, formData, successMessage }: Props) {
       <SlideDown
         closed={!isSubmitted}
       >
-        <div dangerouslySetInnerHTML={{ __html: successMessage }} />
+        <div className={`${el}__success`} dangerouslySetInnerHTML={{ __html: successMessage }} />
       </SlideDown>
     </>
   );

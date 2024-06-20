@@ -24,6 +24,7 @@ function App({ formId, successMessage }: Props) {
           console.log(res);
           setFormData(res);
           setIsLoading(false);
+          window.dispatchEvent(new Event('resize'));
         });
     }
     fetchFormData();
