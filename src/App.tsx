@@ -26,7 +26,7 @@ function App({ formId }: Props) {
   return (
     <>
       {isLoading && <>Loading...</>}
-      {formData.length ? <Form formData={formData} /> : ''}
+      {formData.length ? <Form formId={formId} formData={formData} /> : ''}
     </>
   )
 }
