@@ -9,22 +9,24 @@ import App from './App.tsx'
 // )
 
 class GoogleFormEmbed extends HTMLElement {
-  formId: string;
-
-  successMessage: string;
-
   constructor() {
     // Always call super first in constructor
     super();
-    this.formId = this.dataset.id || '';
-    this.successMessage = this.dataset.successMessage || 'Thank you for your submission. We will get back to you soon.';
-    this.renderElement();
+
+    document.addEventListener('DOMContentLoaded', () => {
+      this.renderElement();
+    });
   }
 
   renderElement() {
+    const formId = this.dataset.formId || '';
+    const successMessage = this.dataset.successMessage || 'Thank you for your submission. We will get back to you soon.';
+
+    console.log(this);
+
     ReactDOM.createRoot(this!).render(
       <React.StrictMode>
-        <App formId={this.formId} successMessage={this.successMessage} />
+        <App formId={formId} successMessage={successMessage} />
      </React.StrictMode>
     );
   }
