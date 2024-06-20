@@ -1,11 +1,13 @@
-import { useForm, SubmitHandler } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { FormItemType } from "../types/FormTypes";
-import { Fragment } from "react/jsx-runtime";
-// import FormItem from "./FormItem";
+import { useState } from "react";
+import { SlideDown } from 'react-slidedown'
+import 'react-slidedown/lib/slidedown.css'
 
 type Props = {
   formId: string,
   formData: FormItemType[],
+  successMessage: string,
 };
 
 const getFormElementType = (initialType:string) => {
@@ -22,21 +24,27 @@ const getFormElementType = (initialType:string) => {
   }
 }
 
-function Form({ formId, formData }: Props) {
+type ParseDataProps = [string, string];
+
+function Form({ formId, formData, successMessage }: Props) {
   const el = 'form-item';
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const { register, handleSubmit, errors } = useForm();
-
-  const onSubmit = (data) => {
-    console.log(data);
-
-    const submitToGoogleForm = async (parsedData) => {
+  const onSubmit = (data: object) => {
+    setIsSubmitting(true);
+    const submitToGoogleForm = async (parsedData: ParseDataProps) => {
       const mappedData = parsedData.map(([key, value]) => {
         return `entry.${key}=${value}`;
       }).join('&');
       fetch(`https://docs.google.com/forms/d/e/${formId}/formResponse?${mappedData}&submit=Submit`, {
         method: "POST",
         mode: "no-cors",
-      }).then(res => console.log(res));
+      }).then(res => {
+        console.log(res);
+        setIsSubmitting(false);
+        setIsSubmitted(true);
+      });
     };
 
     const parsedData = Object.entries(data);
@@ -44,81 +52,104 @@ function Form({ formId, formData }: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      {formData.map((formItem, formItemIndex) => {
-        const formItemType = getFormElementType(formItem.type);
+    <>
+      <SlideDown
+        closed={isSubmitted}
+        style={{
+          transitionDuration: '0.3s',
+        }}
+      >
+        <form onSubmit={handleSubmit(onSubmit)} className={`form form--${isSubmitting ? 'is' : 'not'}-submitting`}>
+          {formData.map((formItem, formItemIndex) => {
+            const formItemType = getFormElementType(formItem.type);
 
-        return (
-          <div className={`${el} ${el}--type-${formItemType}`} key={formItemIndex}>
-            <label htmlFor={formItem.id} className={`${el}__label`}>
-              {formItem.label}
-              {formItem.required && '*'}
-            </label>
+            return (
+              <div className={`${el} ${el}--type-${formItemType}`} key={formItemIndex}>
+                <label htmlFor={formItem.id} className={`${el}__label`}>
+                  {formItem.label}
+                  {formItem.required && '*'}
+                </label>
 
-            {formItemType == 'textarea' && (
-              <textarea
-                id={formItem.id}
-                className={`${el}__input`}
-                {...register(formItem.id, { required: formItem.required })}
-              ></textarea>
-            )}
+                {formItemType == 'textarea' && (
+                  <textarea
+                    id={formItem.id}
+                    className={`${el}__input`}
+                    {...register(formItem.id, { required: formItem.required })}
+                  ></textarea>
+                )}
 
-            {formItemType == 'text' && (
-              <input
-                id={formItem.id}
-                className={`${el}__input`}
-                {...register(formItem.id, { required: formItem.required })}
-              />
-            )}
+                {formItemType == 'text' && (
+                  <input
+                    id={formItem.id}
+                    className={`${el}__input`}
+                    {...register(formItem.id, { required: formItem.required })}
+                  />
+                )}
 
-            {formItemType == 'select' && (
-              <select
-                id={formItem.id}
-                className={`${el}__input`}
-                {...register(formItem.id, { required: formItem.required })}
-              >
-                {!formItem.required && <option value="">- Choose an option -</option>}
-                {formItem.options?.map((option, optionIndex) => (
-                  <option
-                    key={optionIndex}
-                    value={option.label}
-                    className={`${el}__option`}
+                {formItemType == 'select' && (
+                  <select
+                    id={formItem.id}
+                    className={`${el}__input`}
+                    {...register(formItem.id, { required: formItem.required })}
                   >
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            )}
+                    {!formItem.required && <option value="">- Choose an option -</option>}
+                    {formItem.options?.map((option, optionIndex) => (
+                      <option
+                        key={optionIndex}
+                        value={option.label}
+                        className={`${el}__option`}
+                      >
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                )}
 
-            {(formItemType == 'radio') && (
-              <>
-                {formItem.options?.map((option, optionIndex) => {
+                {(formItemType == 'radio') && (
+                  <>
+                    {formItem.options?.map((option, optionIndex) => {
 
-                  return(
-                    <div key={optionIndex} className={`${el}__option`}>
-                      {option.label != '' && <label htmlFor={`${formItem.id}[${option.label}]`}>
-                        <input
-                          defaultChecked={optionIndex == 0 && formItem.required}
-                          id={`${formItem.id}[${option.label}]`}
-                          type="radio"
-                          name={formItem.id}
-                          value={option.label}
-                        />
-                        <span className={`${el}__option-label`}>
-                          {option.label}
-                        </span>
-                      </label>}
-                    </div>
-                  )
-                })}
-              </>
-            )}
-          </div>
-        )
-      })}
-      {/* {errors.email && <span>{errors.email.message}</span>} */}
-      <button type="submit" className={`${el}__button button`}>Submit</button>
-    </form>
+                      return(
+                        <div key={optionIndex} className={`${el}__option`}>
+                          {option.label != '' && <label htmlFor={`${formItem.id}[${option.label}]`}>
+                            <input
+                              defaultChecked={optionIndex == 0 && formItem.required}
+                              id={`${formItem.id}[${option.label}]`}
+                              type="radio"
+                              name={formItem.id}
+                              value={option.label}
+                            />
+                            <span className={`${el}__option-label`}>
+                              {option.label}
+                            </span>
+                          </label>}
+                        </div>
+                      )
+                    })}
+                  </>
+                )}
+
+                {errors && errors[formItem.id] && (
+                  <p className={`${el}__error`}>
+                    {errors[formItem.id].message}
+                  </p>
+                )}
+              </div>
+            )
+          })}
+
+          <button
+            type="submit"
+            className={`${el}__button button`}
+            disabled={isSubmitting}>Submit</button>
+        </form>
+      </SlideDown>
+      <SlideDown
+        closed={!isSubmitted}
+      >
+        <div dangerouslySetInnerHTML={{ __html: successMessage }} />
+      </SlideDown>
+    </>
   );
 }
 

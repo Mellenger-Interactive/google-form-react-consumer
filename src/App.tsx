@@ -4,9 +4,10 @@ import { FormItemType } from './types/FormTypes';
 
 type Props = {
   formId: string,
+  successMessage: string,
 };
 
-function App({ formId }: Props) {
+function App({ formId, successMessage }: Props) {
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState<FormItemType[]>([]);
 
@@ -26,7 +27,7 @@ function App({ formId }: Props) {
   return (
     <>
       {isLoading && <>Loading...</>}
-      {formData.length ? <Form formId={formId} formData={formData} /> : ''}
+      {formData.length ? <Form formId={formId} formData={formData} successMessage={successMessage} /> : ''}
     </>
   )
 }
