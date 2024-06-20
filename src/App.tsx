@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import Form from './components/Form';
+import { FormItem } from './types/FormTypes';
 
 type Props = {
   formId: string,
@@ -6,7 +8,7 @@ type Props = {
 
 function App({ formId }: Props) {
   const [isLoading, setIsLoading] = useState(true);
-  const [formData, setFormData] = useState([]);
+  const [formData, setFormData] = useState<FormItem[]>([]);
 
   useEffect(() => {
     const fetchFormData = async () => {
@@ -24,7 +26,7 @@ function App({ formId }: Props) {
   return (
     <>
       {isLoading && <>Loading...</>}
-      {formData.length && JSON.stringify(formData)}
+      {formData.length ? <Form formData={formData} /> : ''}
     </>
   )
 }
