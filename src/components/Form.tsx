@@ -8,75 +8,100 @@ type Props = {
   formData: FormItemType[],
 };
 
+const getFormElementType = (initialType:string) => {
+  switch(initialType) {
+    case "LONG_ANSWER":
+      return 'textarea';
+    case "DROPDOWN":
+      return 'select';
+    case "RADIO":
+    case "LINEAR":
+      return 'radio';
+    default:
+      return 'text';
+  }
+}
+
 function Form({ formId, formData }: Props) {
+  const el = 'form-item';
   const { register, handleSubmit, errors } = useForm();
   const onSubmit = (data) => console.log(data);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      {formData.map((formItem, formItemIndex) => (
-        <p key={formItemIndex}>
-          <label htmlFor={formItem.id}>
-            {formItem.label}
-            {formItem.required && '*'}
-          </label>
+      {formData.map((formItem, formItemIndex) => {
+        const formItemType = getFormElementType(formItem.type);
 
-          {formItem.type == 'LONG_ANSWER' && (
-            <textarea
-              id={formItem.id}
-              {...register(formItem.id, { required: formItem.required })}
-            ></textarea>
-          )}
+        return (
+          <p className={`${el} ${el}--type-${formItemType}`} key={formItemIndex}>
+            <label htmlFor={formItem.id} className={`${el}__label`}>
+              {formItem.label}
+              {formItem.required && '*'}
+            </label>
 
-          {formItem.type == 'SHORT_ANSWER' && (
-            <input
-              id={formItem.id}
-              {...register(formItem.id, { required: formItem.required })}
-            />
-          )}
+            {formItemType == 'textarea' && (
+              <textarea
+                id={formItem.id}
+                className={`${el}__input`}
+                {...register(formItem.id, { required: formItem.required })}
+              ></textarea>
+            )}
 
-          {formItem.type == 'DROPDOWN' && (
-            <select
-              id={formItem.id}
-              {...register(formItem.id, { required: formItem.required })}
-            >
-              {!formItem.required && <option value="">- Choose an option -</option>}
-              {formItem.options?.map((option, optionIndex) => (
-                <option
-                  key={optionIndex}
-                  value={option.label}
-                >
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          )}
+            {formItemType == 'text' && (
+              <input
+                id={formItem.id}
+                className={`${el}__input`}
+                {...register(formItem.id, { required: formItem.required })}
+              />
+            )}
 
-          {(formItem.type == 'RADIO' || formItem.type == 'LINEAR') && (
-            <>
-              {formItem.options?.map((option, optionIndex) => {
+            {formItemType == 'select' && (
+              <select
+                id={formItem.id}
+                className={`${el}__input`}
+                {...register(formItem.id, { required: formItem.required })}
+              >
+                {!formItem.required && <option value="">- Choose an option -</option>}
+                {formItem.options?.map((option, optionIndex) => (
+                  <option
+                    key={optionIndex}
+                    value={option.label}
+                    className={`${el}__option`}
+                  >
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            )}
 
-                return(
-                  <Fragment key={optionIndex}>
-                    {option.label != '' && <label htmlFor={`${formItem.id}[${option.label}]`}>
-                      <input
+            {(formItemType == 'radio') && (
+              <>
+                {formItem.options?.map((option, optionIndex) => {
+
+                  return(
+                    <div key={optionIndex} className={`${el}__option`}>
+                      {option.label != '' && <label htmlFor={`${formItem.id}[${option.label}]`}>
+                        <input
                           {...(optionIndex == 0 && formItem.required ? { defaultChecked: 'checked' } : {})}
                           id={`${formItem.id}[${option.label}]`}
                           type="radio"
                           name={formItem.id}
                           value={option.label}
-                      />
-                      {option.label}
-                    </label>}
-                  </Fragment>
-                )
-              })}
-            </>
-          )}
-        </p>
-      ))}
-    {/* {errors.email && <span>{errors.email.message}</span>} */}
-    <button type="submit">Submit</button>
+                        />
+                        <span className={`${el}__option-label`}>
+                          {option.label}
+                        </span>
+                      </label>}
+                    </div>
+                  )
+                })}
+              </>
+            )}
+          </p>
+        )
+      })}
+      {/* {errors.email && <span>{errors.email.message}</span>} */}
+      <button type="submit" className={`${el}__button button`}>Submit</button>
     </form>
   );
 }
