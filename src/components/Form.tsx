@@ -55,6 +55,7 @@ function Form({ formId, formData, successMessage }: Props) {
     <>
       <SlideDown
         closed={isSubmitted}
+        transitionOnAppear={false}
         style={{
           transitionDuration: '0.3s',
         }}
