@@ -63,7 +63,7 @@ function Form({ formId, formData }: Props) {
                     </label>
                   ))}
                 </>,
-              'LINEAR':
+              'LINEAR': //TODO: Make range slider?
                 <>
                   {formItem.options?.map((option, optionIndex) => (
                     <label htmlFor={`${formItem.id}[${option.label}]`} key={optionIndex}>
