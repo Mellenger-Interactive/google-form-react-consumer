@@ -23,6 +23,7 @@ Run `yarn dev`. Please note that the current setup expects you to run the Heroku
 
 Run `yarn build` to compile the latest JS and CSS, and push to the `main` branch.
 Right now, `/dist/google-form-react-consumer.js` and `/dist/google-form-react-consumer.css` are served by CDN by [JsDelivr](https://www.jsdelivr.com/github).
+NOTE: It is helpful to use [this tool](https://www.jsdelivr.com/tools/purge) to purge issues with caching on the CDN.
 
 # React + TypeScript + Vite
 
