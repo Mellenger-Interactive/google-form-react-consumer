@@ -30,13 +30,16 @@ function Form({ formId, formData, successMessage }: Props) {
   const el = 'form-item';
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isError, setError] = useState(false);
   const { register, handleSubmit, errors } = useForm();
   const onSubmit = (data: object) => {
     setIsSubmitting(true);
+
     const submitToGoogleForm = async (parsedData: ParseDataProps) => {
       const mappedData = parsedData.map(([key, value]) => {
         return `entry.${key}=${value}`;
       }).join('&');
+
       fetch(`https://docs.google.com/forms/d/e/${formId}/formResponse?${mappedData}&submit=Submit`, {
         method: "POST",
         mode: "no-cors",
@@ -44,6 +47,12 @@ function Form({ formId, formData, successMessage }: Props) {
         console.log(res);
         setIsSubmitting(false);
         setIsSubmitted(true);
+        setError(false);
+      }).catch(res => {
+        // TODO: Real error ha
+        console.log(res);
+        setIsSubmitting(false);
+        setError(true);
       });
     };
 
@@ -152,6 +161,13 @@ function Form({ formId, formData, successMessage }: Props) {
         closed={!isSubmitted}
       >
         <div className={`${el}__success`} dangerouslySetInnerHTML={{ __html: successMessage }} />
+      </SlideDown>
+      <SlideDown
+        closed={!isError}
+      >
+        <div className={`${el}__error`}>
+          There was an error with your submission. Please try again.
+        </div>
       </SlideDown>
     </>
   );
