@@ -5,7 +5,7 @@ This repo works with a small Heroku app to return form structure as JSON, before
 
 # Usage
 
-Embed the following in your page, replacing `GOOGLE_FORM_ID` with the value from your Google Form (`https://docs.google.com/forms/d/GOOGLE_FORM_ID/edit`).
+Embed the following in your page, replacing `GOOGLE_FORM_ID` with the value from your Google Form (`https://docs.google.com/forms/d/GOOGLE_FORM_ID/edit`). The success message in `GOOGLE_FORM_SUCCESS_MESSAGE` is an optional parameter.
 ```html
 <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Mellenger-Interactive/google-form-react-consumer@main/dist/google-form-react-consumer.js"></script>
 <link href="https://cdn.jsdelivr.net/gh/Mellenger-Interactive/google-form-react-consumer@main/dist/google-form-react-consumer.css" rel="stylesheet" type="text/css" media="all">
