@@ -62,6 +62,18 @@ function Form({ formId, formData, successMessage }: Props) {
   return (
     <>
       <SlideDown
+        closed={!isSubmitted}
+      >
+        <div className={`${el}__success`} dangerouslySetInnerHTML={{ __html: successMessage }} />
+      </SlideDown>
+      <SlideDown
+        closed={!isError}
+      >
+        <div className={`${el}__error`}>
+          There was an error with your submission. Please try again.
+        </div>
+      </SlideDown>
+      <SlideDown
         closed={isSubmitted}
         transitionOnAppear={false}
         style={{
@@ -155,18 +167,6 @@ function Form({ formId, formData, successMessage }: Props) {
               <span>Submit</span>
           </button>
         </form>
-      </SlideDown>
-      <SlideDown
-        closed={!isSubmitted}
-      >
-        <div className={`${el}__success`} dangerouslySetInnerHTML={{ __html: successMessage }} />
-      </SlideDown>
-      <SlideDown
-        closed={!isError}
-      >
-        <div className={`${el}__error`}>
-          There was an error with your submission. Please try again.
-        </div>
       </SlideDown>
     </>
   );
