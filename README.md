@@ -1,3 +1,28 @@
+# About this project
+
+This repo creates a tiny custom HTML component that becomes a React app that embeds a simple, stylable Google form.
+This repo works with a small Heroku app to return form structure as JSON, before delivering it as React components.
+
+# Usage
+
+Embed the following in your page, replacing `GOOGLE_FORM_ID` with the value from your Google Form (`https://docs.google.com/forms/d/GOOGLE_FORM_ID/edit`).
+```html
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Mellenger-Interactive/google-form-react-consumer@main/dist/google-form-react-consumer.js"></script>
+<link href="https://cdn.jsdelivr.net/gh/Mellenger-Interactive/google-form-react-consumer@main/dist/google-form-react-consumer.css" rel="stylesheet" type="text/css" media="all">
+<google-form-embed
+  data-form-id="GOOGLE_FORM_ID"
+  data-success-message="GOOGLE_FORM_SUCCESS_MESSAGE">
+</google-form-embed>
+```
+
+# Development
+
+Run `yarn dev`. Please note that the current setup expects you to run the Heroku app locally. To change this, simply chang the `middlewareUrl` variable in `App.tsx` to point to the Heroku library, like it does on pro
+
+# Deployment
+
+Run `yarn build` to compile the latest JS and CSS, and push to the `main` branch.
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
