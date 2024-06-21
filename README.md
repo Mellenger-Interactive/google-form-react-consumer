@@ -17,12 +17,12 @@ Embed the following in your page, replacing `GOOGLE_FORM_ID` with the value from
 
 # Development
 
-Run `yarn dev`. Please note that the current setup expects you to run the Heroku app locally. To change this, simply chang the `middlewareUrl` variable in `App.tsx` to point to the Heroku library, like it does on pro
+Run `yarn dev`. Please note that the current setup expects you to run the Heroku app locally. To change this, simply chang the `middlewareUrl` variable in `App.tsx` to point to the Heroku library, like it does on production.
 
 # Deployment
 
 Run `yarn build` to compile the latest JS and CSS, and push to the `main` branch.
-Right now, `/dist/google-form-react-consumer.js` and `/dist/google-form-react-consumer.css` are served by CDN by [JsDelivr](`https://www.jsdelivr.com/github`).
+Right now, `/dist/google-form-react-consumer.js` and `/dist/google-form-react-consumer.css` are served by CDN by [JsDelivr](https://www.jsdelivr.com/github).
 
 # React + TypeScript + Vite
 
