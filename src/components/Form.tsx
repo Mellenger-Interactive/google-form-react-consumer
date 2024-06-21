@@ -44,12 +44,11 @@ function Form({ formId, formData, successMessage }: Props) {
         method: "POST",
         mode: "no-cors",
       }).then(res => {
-        console.log(res);
         setIsSubmitting(false);
         setIsSubmitted(true);
         setError(false);
       }).catch(res => {
-        // TODO: Real error ha
+        // TODO: Real error handling
         console.log(res);
         setIsSubmitting(false);
         setError(true);

@@ -21,7 +21,6 @@ function App({ formId, successMessage }: Props) {
       await fetch(`${middlewareUrl}get-form/${formId}`)
         .then(res => res.json())
         .then(res => {
-          console.log(res);
           setFormData(res);
           setIsLoading(false);
           window.dispatchEvent(new Event('resize'));
