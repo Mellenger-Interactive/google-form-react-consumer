@@ -37,13 +37,13 @@ function Form({ formId, formData, successMessage }: Props) {
 
     const submitToGoogleForm = async (parsedData: ParseDataProps) => {
       const mappedData = parsedData.map(([key, value]) => {
-        return `entry.${key}=${value}`;
+        return `entry.${key}=${encodeURIComponent(value)}`;
       }).join('&');
 
       fetch(`https://docs.google.com/forms/d/e/${formId}/formResponse?${mappedData}&submit=Submit`, {
         method: "POST",
         mode: "no-cors",
-      }).then(res => {
+      }).then(() => {
         setIsSubmitting(false);
         setIsSubmitted(true);
         setError(false);
